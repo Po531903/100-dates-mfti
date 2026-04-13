@@ -199,7 +199,21 @@
                             <div class="col-1"><span class="text-danger">Сб</span></div>
                             <div class="col-1"><span class="text-danger">Вс</span></div>
                         </div>
-                        <div id="calendarGrid" class="row g-0"></div>
+                        <div id="calendarGrid" class="row g-0 text-center"></div>
+                        
+                        <div class="text-center mt-4">
+                            <p class="text-muted mb-2">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Нажмите на выделенную дату, чтобы узнать о событии
+                            </p>
+                            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                                <span class="category-badge category-history"><i class="bi bi-book me-1"></i>История</span>
+                                <span class="category-badge category-science"><i class="bi bi-lightbulb me-1"></i>Наука</span>
+                                <span class="category-badge category-culture"><i class="bi bi-palette me-1"></i>Культура</span>
+                                <span class="category-badge category-sport"><i class="bi bi-trophy me-1"></i>Спорт</span>
+                                <span class="category-badge category-education"><i class="bi bi-mortarboard me-1"></i>Образование</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -291,19 +305,11 @@
             
             monthYearEl.textContent = monthNames[currentMonth - 1]; // + ' ' + currentYear
             
-            const firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
-            let firstDayIndex = firstDay === 0 ? 6 : firstDay - 1;
             const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
-            const daysInPrevMonth = new Date(currentYear, currentMonth - 1, 0).getDate();
             
             let html = '';
             
-            // Prev month days
-            for (let i = firstDayIndex - 1; i >= 0; i--) {
-                html += `<div class="col-1"><div class="calendar-day other-month"><div class="day-number">${daysInPrevMonth - i}</div></div></div>`;
-            }
-            
-            // Current month days
+            // Current month days only (no prev/next month days)
             for (let day = 1; day <= daysInMonth; day++) {
                 const dayEvents = getEventsForDate(currentYear, currentMonth, day);
                 const hasEvent = dayEvents.length > 0;
@@ -312,13 +318,6 @@
                 const indicator = hasEvent ? '<div class="event-indicator"><i class="bi bi-star-fill"></i></div>' : '';
                 
                 html += `<div class="col-1"><div class="calendar-day ${eventClass}" ${onclick}><div class="day-number">${day}</div>${indicator}</div></div>`;
-            }
-            
-            // Next month days
-            const totalCells = Math.ceil((firstDayIndex + daysInMonth) / 7) * 7;
-            const remainingCells = totalCells - (firstDayIndex + daysInMonth);
-            for (let day = 1; day <= remainingCells; day++) {
-                html += `<div class="col-1"><div class="calendar-day other-month"><div class="day-number">${day}</div></div></div>`;
             }
             
             grid.innerHTML = html;
