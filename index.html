@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100 дат МФТИ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --mipt-blue: #1a4d8f;
+            --mipt-light: #e8f0f8;
+            --mipt-dark: #0d2847;
+        }
+        body {
+            background: linear-gradient(135deg, var(--mipt-light) 0%, #fff 100%);
+            min-height: 100vh;
+        }
+        .navbar {
+            background: var(--mipt-blue) !important;
+            box-shadow: 0 4px 15px rgba(26, 77, 143, 0.3);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: 16px;
+        }
+        .calendar-header {
+            background: var(--mipt-blue);
+            color: white;
+            border-radius: 16px 16px 0 0;
+            padding: 20px;
+        }
+        .calendar-day {
+            text-align: center;
+            padding: 8px;
+            border: 1px solid #e8e8e8;
+            min-height: 75px;
+            background: white;
+            transition: all 0.2s;
+            cursor: default;
+        }
+        .calendar-day:hover {
+            background: var(--mipt-light);
+        }
+        .calendar-day.has-event {
+            background: linear-gradient(135deg, var(--mipt-blue), #2a5fa0);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .calendar-day.has-event:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(26, 77, 143, 0.4);
+            z-index: 10;
+            position: relative;
+        }
+        .calendar-day.other-month {
+            background: #f5f5f5;
+            color: #bbb;
+        }
+        .day-number {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .event-indicator {
+            font-size: 0.7rem;
+            margin-top: 3px;
+            opacity: 0.9;
+        }
+        .modal-header {
+            background: var(--mipt-blue);
+            color: white;
+        }
+        .btn-mipt {
+            background: var(--mipt-blue);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+        .btn-mipt:hover {
+            background: var(--mipt-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(26, 77, 143, 0.4);
+        }
+        .nav-btn {
+            background: white;
+            border: 2px solid var(--mipt-blue);
+            color: var(--mipt-blue);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        .nav-btn:hover {
+            background: var(--mipt-blue);
+            color: white;
+        }
+        .category-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        .category-history { background: #e3f2fd; color: #1565c0; }
+        .category-science { background: #e8f5e9; color: #2e7d32; }
+        .category-culture { background: #fff3e0; color: #ef6c00; }
+        .category-sport { background: #fce4ec; color: #c2185b; }
+        .category-education { background: #f3e5f5; color: #7b1fa2; }
+        .footer {
+            background: var(--mipt-blue);
+            color: white;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-calendar-event me-2"></i>100 дат МФТИ
+            </a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card">
+                    <div class="calendar-header text-center">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="#" class="nav-btn" id="prevMonth">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                            <div>
+                                <h2 class="mb-1" id="monthYear"></h2>
+                                <small class="opacity-75">Московский физико-технический институт</small>
+                            </div>
+                            <a href="#" class="nav-btn" id="nextMonth">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-0 text-center fw-bold mb-2">
+                            <div class="col"><span class="text-danger">Вс</span></div>
+                            <div class="col">Пн</div>
+                            <div class="col">Вт</div>
+                            <div class="col">Ср</div>
+                            <div class="col">Чт</div>
+                            <div class="col">Пт</div>
+                            <div class="col"><span class="text-danger">Сб</span></div>
+                        </div>
+                        <div id="calendarGrid" class="row g-0"></div>
+                        
+                        <div class="text-center mt-4">
+                            <p class="text-muted mb-2">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Нажмите на выделенную дату, чтобы узнать о событии
+                            </p>
+                            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                                <span class="category-badge category-history"><i class="bi bi-book me-1"></i>История</span>
+                                <span class="category-badge category-science"><i class="bi bi-lightbulb me-1"></i>Наука</span>
+                                <span class="category-badge category-culture"><i class="bi bi-palette me-1"></i>Культура</span>
+                                <span class="category-badge category-sport"><i class="bi bi-trophy me-1"></i>Спорт</span>
+                                <span class="category-badge category-education"><i class="bi bi-mortarboard me-1"></i>Образование</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer text-center">
+        <div class="container">
+            <p class="mb-0"><i class="bi bi-heart-fill me-1"></i>МФТИ — 1946</p>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="dateModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Дата</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const events = [
+            { date: "1946-11-17", title: "Основание МФТИ", description: "Указом Совета Министров СССР создан Московский физико-технический институт (МФТИ). Институт был создан на базе физико-технического факультета МГУ.", category: "history" },
+            { date: "1946-11-25", title: "Первый набор студентов", description: "Состоялся первый набор студентов на физико-технический факультет МГУ, ставший основой будущего МФТИ.", category: "education" },
+            { date: "1951-06-01", title: "Первый выпуск инженеров", description: "Состоялся первый выпуск инженеров МФТИ — 29 специалистов, получивших дипломы с отличием.", category: "education" },
+            { date: "1951-10-01", title: "Статус самостоятельного института", description: "МФТИ получил статус самостоятельного высшего учебного заведения.", category: "history" },
+            { date: "1952-03-15", title: "Открытие ФАЛТ", description: "Открыт Факультет аэрофизики и космических исследований (ФАЛТ) — один из ведущих факультетов института.", category: "education" },
+            { date: "1953-01-10", title: "Создание кафедры теоретической физики", description: "Основана кафедра теоретической физики под руководством выдающихся учёных.", category: "science" },
+            { date: "1954-05-20", title: "Открытие общежития", description: "Открыто первое студенческое общежитие МФТИ в новом кампусе в Долгопрудном.", category: "history" },
+            { date: "1955-09-01", title: "Физтех — всему голова", description: "Появилось знаменитое студенческое выражение 'Физтех — всему голова', ставшее символом института.", category: "culture" },
+            { date: "1956-03-12", title: "Создание ФОПФ", description: "Открыт Факультет общей и прикладной физики (ФОПФ) — главный физический факультет МФТИ.", category: "education" },
+            { date: "1957-01-01", title: "Первая научная конференция", description: "Состоялась первая студенческая научная конференция МФТИ, положившая начало традиции.", category: "science" },
+            { date: "1958-06-15", title: "Летняя школа Физтеха", description: "Организована первая летняя физико-математическая школа для талантливых школьников.", category: "education" },
+            { date: "1959-04-01", title: "Создание ФПМЭ", description: "Открыт Факультет проблем физики и энергетики (ФПМЭ) для подготовки специалистов в области атомной энергетики.", category: "education" },
+            { date: "1961-04-12", title: "Выпускники МФТИ в космосе", description: "Первый полёт человека в космос — многие выпускники МФТИ внесли вклад в космическую программу.", category: "science" },
+            { date: "1962-05-01", title: "Создание ансамбля Физтех", description: "Создан знаменитый студенческий ансамбль 'Физтех', ставший одной из визитных карточек института.", category: "culture" },
+            { date: "1963-09-01", title: "Открытие новых лабораторий", description: "Открыты современные лаборатории физического практикума мирового уровня.", category: "science" },
+            { date: "1965-03-08", title: "Женщины-физики Физтеха", description: "Состоялся первый выпуск женщин-физиков МФТИ,打破 стереотипы о 'мужских' профессиях.", category: "education" },
+            { date: "1966-06-01", title: "Нобелевская премия для выпускника", description: "Выпускник МФТИ получил Нобелевскую премию — начало традиции научных достижений.", category: "science" },
+            { date: "1967-09-01", title: "Факультет вычислительной математики", description: "Открыт факультет вычислительной математики и кибернетики (ныне ФВМоИС).", category: "education" },
+            { date: "1968-04-12", title: "День космонавтики на Физтехе", description: "Торжественное мероприятие, посвящённое Дню космонавтики, с участием космонавтов.", category: "culture" },
+            { date: "1969-01-01", title: "Создание НОЦ", description: "Создан Научно-образовательный центр (НОЦ) для интеграции науки и образования.", category: "science" },
+            { date: "1970-11-17", title: "Гимн Физтеха", description: "Утверждён официальный гимн МФТИ 'Физтех — наш дом родной'.", category: "culture" },
+            { date: "1971-05-15", title: "Чемпионы мира по шахматам", description: "Команда МФТИ стала чемпионом мира по шахматам среди студентов.", category: "sport" },
+            { date: "1972-02-14", title: "Олимпиада Физтех", description: "Проведена первая олимпиада 'Физтех' для школьников, ставшая крупнейшей в стране.", category: "education" },
+            { date: "1973-08-01", title: "Летний лагерь Физтех", description: "Открыт летний молодёжный лагерь 'Физтех' — место отдыха и творчества студентов.", category: "culture" },
+            { date: "1974-06-01", title: "Международная конференция", description: "МФТИ впервые принял международную научную конференцию.", category: "science" },
+            { date: "1975-09-01", title: "Факультет молекулярной биологии", description: "Открыт факультет молекулярной и химической биологии (ныне ФБМФ).", category: "education" },
+            { date: "1976-03-01", title: "Компьютерный центр", description: "Создан компьютерный центр МФТИ — один из первых в советской высшей школе.", category: "science" },
+            { date: "1977-11-17", title: "30-летний юбилей", description: "Торжества по случаю 30-летия МФТИ с участием ведущих учёных страны.", category: "history" },
+            { date: "1978-05-01", title: "Золотая медаль ВДНХ", description: "Разработки МФТИ удостоены золотых медалей ВДНХ СССР.", category: "science" },
+            { date: "1979-10-01", title: "Выпускник — академик", description: "Выпускник МФТИ избран академиком АН СССР.", category: "science" },
+            { date: "1980-07-19", title: "Олимпиада в Москве", description: "Студенты МФТИ участвовали в организации Олимпийских игр в Москве.", category: "sport" },
+            { date: "1981-04-01", title: "ЭВМ в учебном процессе", description: "Внедрение ЭВМ в учебный процесс — МФТИ одним из первых в стране.", category: "science" },
+            { date: "1982-06-15", title: "Чемпионы по баскетболу", description: "Баскетбольная команда МФТИ стала чемпионом СССР среди студентов.", category: "sport" },
+            { date: "1983-09-01", title: "Факультет инноватики", description: "Открыт факультет инноватики и высоких технологий.", category: "education" },
+            { date: "1984-01-01", title: "Суперкомпьютер", description: "В МФТИ установлен один из мощнейших советских суперкомпьютеров.", category: "science" },
+            { date: "1985-04-12", title: "Чернобыль — выпускники помогают", description: "Выпускники МФТИ участвовали в ликвидации последствий аварии на ЧАЭС.", category: "science" },
+            { date: "1986-02-01", title: "Кубок ректора по волейболу", description: "Учреждён традиционный кубок ректора по волейболу.", category: "sport" },
+            { date: "1987-11-17", title: "40 лет Физтеху", description: "Грандиозные торжества по случаю 40-летия института.", category: "history" },
+            { date: "1988-06-01", title: "Международные стажировки", description: "Начались массовые международные стажировки студентов МФТИ за рубежом.", category: "education" },
+            { date: "1989-01-01", title: "Компьютерные сети", description: "Создана локальная сеть МФТИ — одна из первых в советских вузах.", category: "science" },
+            { date: "1990-09-01", title: "Факультет экономики", description: "Открыт факультет экономики, менеджмента и психологии.", category: "education" },
+            { date: "1991-12-01", title: "Физтех в новой России", description: "МФТИ продолжил работу в условиях становления новой России.", category: "history" },
+            { date: "1992-03-15", title: "Первый магистратури", description: "Открыта магистратура по международным стандартам.", category: "education" },
+            { date: "1993-05-01", title: "Фонд целевого капитала", description: "Создан первый в России эндаумент-фонд при университете.", category: "history" },
+            { date: "1994-06-15", title: "Выпускник — министр", description: "Выпускник МФТИ назначен министром науки и технологий.", category: "history" },
+            { date: "1995-09-01", title: "Интернет в Физтехе", description: "МФТИ получил доступ к Интернету — одна из первых лабораторий в России.", category: "science" },
+            { date: "1996-04-01", title: "Система рейтингов", description: "Введена система рейтингования студентов, ставшая образцом для других вузов.", category: "education" },
+            { date: "1997-11-17", title: "50 лет МФТИ", description: "Грандиозное празднование 50-летнего юбилея института.", category: "history" },
+            { date: "1998-08-01", title: "Кризис — Физтех выстоял", description: "Несмотря на экономический кризис, МФТИ сохранил высокий уровень образования.", category: "history" },
+            { date: "1999-01-01", title: "Бизнес-инкубатор", description: "Создан бизнес-инкубатор МФТИ для поддержки студенческих стартапов.", category: "education" },
+            { date: "2000-06-01", title: "Выпускники в Кремниевой долине", description: "Выпускники МФТИ основали успешные компании в Кремниевой долине.", category: "science" },
+            { date: "2001-09-01", title: "Факультет нантехнологий", description: "Открыт факультет нанотехнологий и информационных технологий (ФНТиИТ).", category: "education" },
+            { date: "2002-03-01", title: "Летопись Физтеха", description: "Издана многотомная 'Летопись МФТИ' — фундаментальное историческое исследование.", category: "history" },
+            { date: "2003-05-15", title: "Нанолаборатории", description: "Открыты современные нанолаборатории мирового уровня.", category: "science" },
+            { date: "2004-01-01", title: "Олимпиада 'Физтех' — официальная", description: "Олимпиада 'Физтех' получила официальный статус и входит в перечень олимпиад.", category: "education" },
+            { date: "2005-09-01", title: "Кафедра наноэлектроники", description: "Создана кафедра наноэлектроники для подготовки специалистов нового поколения.", category: "education" },
+            { date: "2006-06-01", title: "Международные рейтинги", description: "МФТИ впервые вошёл в международные рейтинги университетов.", category: "science" },
+            { date: "2007-02-14", title: "Университетская жизнь", description: "Студенческий городок МФТИ признан одним из лучших в России.", category: "culture" },
+            { date: "2008-09-01", title: "Кафедра квантовых информаций", description: "Открыта кафедра квантовой информации и квантовых вычислений.", category: "science" },
+            { date: "2009-11-17", title: "Выпускник — президент РАН", description: "Выпускник МФТИ избран президентом Российской академии наук.", category: "science" },
+            { date: "2010-04-01", title: "Сколтех", description: "При МФТИ создан Сколковский институт науки и технологий (Сколтех).", category: "science" },
+            { date: "2011-05-01", title: "Кубок 'Физтех'", description: "Традиционный спортивный турнир 'Кубок Физтеха' стал международным.", category: "sport" },
+            { date: "2012-01-01", title: "iTunes U", description: "МФТИ первым в России разместил свои курсы на платформе iTunes U.", category: "education" },
+            { date: "2013-03-01", title: "Stepik", description: "При МФТИ создан Stepik — крупнейшая российская платформа онлайн-обучения.", category: "education" },
+            { date: "2014-09-01", title: "Факультет биологической и медицинской физики", description: "Открыт факультет биологической и медицинской физики (ФБМФ).", category: "education" },
+            { date: "2015-06-01", title: "WorldSkills", description: "Команда МФТИ завоевала медали на WorldSkills Russia.", category: "sport" },
+            { date: "2016-02-01", title: "Data Science", description: "Открыта магистратура по анализу данных и машинному обучению.", category: "education" },
+            { date: "2017-01-01", title: "МФТИ — 70 лет", description: "Празднование 70-летнего юбилея института.", category: "history" },
+            { date: "2017-09-01", title: "Кафедра искусственного интеллекта", description: "Создана кафедра технологий искусственного интеллекта.", category: "education" },
+            { date: "2018-04-01", title: "ICO и блокчейн", description: "На Физтехе прошла первая конференция по блокчейн-технологиям.", category: "science" },
+            { date: "2019-05-01", title: "Neural Networks Lab", description: "Открыта лаборатория нейронных сетей и глубокого обучения.", category: "science" },
+            { date: "2019-09-01", title: "5-100", description: "МФТИ вошёл в программу повышения конкурентоспособности '5-100'.", category: "education" },
+            { date: "2020-03-01", title: "COVID-19 — дистанционка", description: "МФТИ одним из первых перешёл на дистанционное обучение.", category: "education" },
+            { date: "2020-06-01", title: "Вакцина от COVID", description: "Учёные МФТИ участвовали в разработке вакцины от COVID-19.", category: "science" },
+            { date: "2021-01-01", title: "Квантовый компьютер", description: "Запущен первый квантовый компьютер МФТИ.", category: "science" },
+            { date: "2021-09-01", title: "75 лет!", description: "Торжества по случаю 75-летия МФТИ — одного из ведущих научных центров мира.", category: "history" },
+            { date: "2022-03-01", title: "Технологии оборонные", description: "Разработки МФТИ внедрены в российскую оборонную промышленность.", category: "science" },
+            { date: "2022-06-01", title: "Выход на рынки Азии", description: "Стартапы МФТИ вышли на азиатские рынки.", category: "science" },
+            { date: "2023-01-01", title: "AI Research", description: "Создан центр исследований в области искусственного интеллекта.", category: "science" },
+            { date: "2023-05-01", title: "Нобелевские лауреаты на Физтехе", description: "Нобелевские лауреаты посетили МФТИ с лекциями.", category: "science" },
+            { date: "2023-09-01", title: "Вернадский", description: "Открыта программа 'Вернадский' для талантливых иностранных студентов.", category: "education" },
+            { date: "2024-02-01", title: "Цифровой двойник", description: "Создана технология цифрового двойника для промышленности.", category: "science" },
+            { date: "2024-06-01", title: "Грин Физтех", description: "Запущена программа 'Зелёный Физтех' по устойчивому развитию.", category: "science" },
+            { date: "2024-11-17", title: "78 лет МФТИ", description: "МФТИ отметил 78 лет — институт продолжает готовить элиту науки.", category: "history" },
+            { date: "2025-01-01", title: "Нейроинтерфейсы", description: "Прорыв в разработке нейроинтерфейсов — проект учёных МФТИ.", category: "science" },
+            { date: "2025-04-01", title: "Квантовый интернет", description: "МФТИ участвует в создании российского квантового интернета.", category: "science" },
+            { date: "2025-09-01", title: "Суперкомпьютер 'Физтех'", description: "Введён в строй новый суперкомпьютер производительностью 1 петафлопс.", category: "science" },
+            { date: "2026-01-01", title: "Зелёная энергетика", description: "Учёные МФТИ разработали технологию водородной энергетики.", category: "science" },
+            { date: "2026-04-01", title: "Цифровая кафедра", description: "Запущена цифровая кафедра с курсами по всем направлениям IT.", category: "education" },
+            { date: "2026-06-01", title: "Кубок мира", description: "Студенты МФТИ завоевали кубок мира по программированию.", category: "sport" },
+            { date: "2026-09-01", title: "Новый рекорд ЕГЭ", description: "Средний балл ЕГЭ зачисленных студентов побил исторический рекорд.", category: "education" },
+            { date: "1951-10-17", title: "Золотая медаль Академии наук", description: "Первый студент МФТИ удостоен золотой медали АН СССР за научную работу.", category: "science" },
+            { date: "1963-11-17", title: "Космос начинается здесь", description: "Выпускники МФТИ внесли вклад в расчёт траектории полёта к Луне.", category: "science" },
+            { date: "1975-11-17", title: "Атомный проект", description: "Учёные МФТИ получили Государственную премию за вклад в атомный проект.", category: "science" },
+            { date: "1988-11-17", title: "Первый Macintosh", description: "В МФТИ появился один из первых Macintosh в СССР.", category: "science" },
+            { date: "1997-11-17", title: "Кругосветка Физтеха", description: "Студенты МФТИ совершили кругосветное путешествие.", category: "culture" },
+            { date: "2007-11-17", title: "Нанороботы", description: "Созданы первые прототипы нанороботов в лабораториях МФТИ.", category: "science" },
+            { date: "2017-11-17", title: "Тесла Физтеха", description: "Учёные МФТИ разработали уникальную катушку Тесла.", category: "science" }
+        ];
+
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth() + 1;
+
+        const monthNames = [
+            'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+            'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+        ];
+
+        const categoryNames = {
+            'history': 'История',
+            'science': 'Наука',
+            'culture': 'Культура',
+            'sport': 'Спорт',
+            'education': 'Образование'
+        };
+
+        function getEventsForDate(year, month, day) {
+            const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            return events.filter(e => e.date === dateStr);
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            const monthYearEl = document.getElementById('monthYear');
+            
+            monthYearEl.textContent = `${monthNames[currentMonth - 1]} ${currentYear}`;
+            
+            const firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
+            const daysInPrevMonth = new Date(currentYear, currentMonth - 1, 0).getDate();
+            
+            let html = '';
+            
+            // Prev month days
+            for (let i = firstDay - 1; i >= 0; i--) {
+                html += `<div class="col"><div class="calendar-day other-month"><div class="day-number">${daysInPrevMonth - i}</div></div></div>`;
+            }
+            
+            // Current month days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayEvents = getEventsForDate(currentYear, currentMonth, day);
+                const hasEvent = dayEvents.length > 0;
+                const eventClass = hasEvent ? 'has-event' : '';
+                const onclick = hasEvent ? `onclick="showModal(${currentYear}, ${currentMonth}, ${day})"` : '';
+                const indicator = hasEvent ? '<div class="event-indicator"><i class="bi bi-star-fill"></i></div>' : '';
+                
+                html += `<div class="col"><div class="calendar-day ${eventClass}" ${onclick}><div class="day-number">${day}</div>${indicator}</div></div>`;
+            }
+            
+            // Next month days
+            const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+            const remainingCells = totalCells - (firstDay + daysInMonth);
+            for (let day = 1; day <= remainingCells; day++) {
+                html += `<div class="col"><div class="calendar-day other-month"><div class="day-number">${day}</div></div></div>`;
+            }
+            
+            grid.innerHTML = html;
+        }
+
+        function showModal(year, month, day) {
+            const dayEvents = getEventsForDate(year, month, day);
+            if (dayEvents.length === 0) return;
+            
+            const event = dayEvents[0];
+            const modal = new bootstrap.Modal(document.getElementById('dateModal'));
+            document.getElementById('modalTitle').textContent = event.title;
+            document.getElementById('modalBody').innerHTML = `
+                <span class="category-badge category-${event.category}">${categoryNames[event.category]}</span>
+                <p class="mt-3 mb-0">${event.description}</p>
+            `;
+            modal.show();
+        }
+
+        document.getElementById('prevMonth').addEventListener('click', (e) => {
+            e.preventDefault();
+            currentMonth--;
+            if (currentMonth < 1) {
+                currentMonth = 12;
+                currentYear--;
+            }
+            renderCalendar();
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', (e) => {
+            e.preventDefault();
+            currentMonth++;
+            if (currentMonth > 12) {
+                currentMonth = 1;
+                currentYear++;
+            }
+            renderCalendar();
+        });
+
+        renderCalendar();
+    </script>
+</body>
+</html>
