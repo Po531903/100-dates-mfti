@@ -155,13 +155,13 @@
                     </div>
                     <div class="card-body p-4">
                         <div class="row g-0 text-center fw-bold mb-2">
-                            <div class="col"><span class="text-danger">Вс</span></div>
                             <div class="col">Пн</div>
                             <div class="col">Вт</div>
                             <div class="col">Ср</div>
                             <div class="col">Чт</div>
                             <div class="col">Пт</div>
                             <div class="col"><span class="text-danger">Сб</span></div>
+                            <div class="col"><span class="text-danger">Вс</span></div>
                         </div>
                         <div id="calendarGrid" class="row g-0"></div>
                         
@@ -333,13 +333,14 @@
             monthYearEl.textContent = monthNames[currentMonth - 1];
             
             const firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
+            let firstDayIndex = firstDay === 0 ? 6 : firstDay - 1;
             const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
             const daysInPrevMonth = new Date(currentYear, currentMonth - 1, 0).getDate();
             
             let html = '';
             
             // Prev month days
-            for (let i = firstDay - 1; i >= 0; i--) {
+            for (let i = firstDayIndex - 1; i >= 0; i--) {
                 html += `<div class="col"><div class="calendar-day other-month"><div class="day-number">${daysInPrevMonth - i}</div></div></div>`;
             }
             
@@ -355,8 +356,8 @@
             }
             
             // Next month days
-            const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
-            const remainingCells = totalCells - (firstDay + daysInMonth);
+            const totalCells = Math.ceil((firstDayIndex + daysInMonth) / 7) * 7;
+            const remainingCells = totalCells - (firstDayIndex + daysInMonth);
             for (let day = 1; day <= remainingCells; day++) {
                 html += `<div class="col"><div class="calendar-day other-month"><div class="day-number">${day}</div></div></div>`;
             }
