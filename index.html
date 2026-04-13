@@ -163,14 +163,17 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark mb-0">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand d-none d-md-block" href="#">
                 <i class="bi bi-calendar-event me-2"></i>100 дат МФТИ
             </a>
         </div>
     </nav>
 
-    <main class="container-fluid flex-grow-1">
-        <div class="row justify-content-center">
+    <main class="container-fluid flex-grow-1 d-flex flex-column align-items-center pt-2">
+        <div class="text-center">
+            <h1 class="display-2 fw-bold mb-1" style="color: var(--mipt-blue);">100 дат МФТИ</h1>
+        </div>
+        <div class="w-100" style="max-width: 900px;">
             <div class="col-12">
                 <div class="card">
                     <div class="calendar-header text-center py-3">
@@ -197,20 +200,6 @@
                             <div class="col-1"><span class="text-danger">Вс</span></div>
                         </div>
                         <div id="calendarGrid" class="row g-0"></div>
-                        
-                        <div class="text-center mt-4">
-                            <p class="text-muted mb-2">
-                                <i class="bi bi-info-circle me-1"></i>
-                                Нажмите на выделенную дату, чтобы узнать о событии
-                            </p>
-                            <div class="d-flex justify-content-center gap-3 flex-wrap">
-                                <span class="category-badge category-history"><i class="bi bi-book me-1"></i>История</span>
-                                <span class="category-badge category-science"><i class="bi bi-lightbulb me-1"></i>Наука</span>
-                                <span class="category-badge category-culture"><i class="bi bi-palette me-1"></i>Культура</span>
-                                <span class="category-badge category-sport"><i class="bi bi-trophy me-1"></i>Спорт</span>
-                                <span class="category-badge category-education"><i class="bi bi-mortarboard me-1"></i>Образование</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
