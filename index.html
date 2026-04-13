@@ -150,6 +150,7 @@
                             </a>
                             <div>
                                 <h2 class="mb-1" id="monthYear"></h2>
+                                <h4 class="mb-0 opacity-75" id="currentYearDisplay"></h4>
                                 <small class="opacity-75">Московский физико-технический институт</small>
                             </div>
                             <a href="#" class="nav-btn" id="nextMonth">
@@ -376,7 +377,8 @@
             'science': 'Наука',
             'culture': 'Культура',
             'sport': 'Спорт',
-            'education': 'Образование'
+            'education': 'Образование',
+            'person': 'Деятель'
         };
 
         function getEventsForDate(year, month, day) {
@@ -389,6 +391,7 @@
             const monthYearEl = document.getElementById('monthYear');
             
             monthYearEl.textContent = monthNames[currentMonth - 1];
+            document.getElementById('currentYearDisplay').textContent = currentYear;
             
             const firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
             let firstDayIndex = firstDay === 0 ? 6 : firstDay - 1;
@@ -442,6 +445,7 @@
             currentMonth--;
             if (currentMonth < 1) {
                 currentMonth = 12;
+                currentYear--;
             }
             renderCalendar();
         });
@@ -451,6 +455,7 @@
             currentMonth++;
             if (currentMonth > 12) {
                 currentMonth = 1;
+                currentYear++;
             }
             renderCalendar();
         });
