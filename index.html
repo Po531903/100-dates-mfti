@@ -15,6 +15,7 @@
         body {
             background: linear-gradient(135deg, var(--mipt-light) 0%, #fff 100%);
             min-height: 100vh;
+            padding-bottom: 100px;
         }
         .navbar {
             background: var(--mipt-blue) !important;
@@ -39,10 +40,13 @@
             text-align: center;
             padding: 8px;
             border: 1px solid #e8e8e8;
-            min-height: 75px;
+            min-height: 120px;
             background: white;
             transition: all 0.2s;
             cursor: default;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
         .calendar-day:hover {
             background: var(--mipt-light);
@@ -54,7 +58,7 @@
             font-weight: bold;
         }
         .calendar-day.has-event:hover {
-            transform: scale(1.05);
+            transform: scale(1.02);
             box-shadow: 0 4px 15px rgba(26, 77, 143, 0.4);
             z-index: 10;
             position: relative;
@@ -155,13 +159,13 @@
                     </div>
                     <div class="card-body p-4">
                         <div class="row g-0 text-center fw-bold mb-2">
-                            <div class="col">Пн</div>
-                            <div class="col">Вт</div>
-                            <div class="col">Ср</div>
-                            <div class="col">Чт</div>
-                            <div class="col">Пт</div>
-                            <div class="col"><span class="text-danger">Сб</span></div>
-                            <div class="col"><span class="text-danger">Вс</span></div>
+                            <div class="col-1">Пн</div>
+                            <div class="col-1">Вт</div>
+                            <div class="col-1">Ср</div>
+                            <div class="col-1">Чт</div>
+                            <div class="col-1">Пт</div>
+                            <div class="col-1"><span class="text-danger">Сб</span></div>
+                            <div class="col-1"><span class="text-danger">Вс</span></div>
                         </div>
                         <div id="calendarGrid" class="row g-0"></div>
                         
@@ -373,7 +377,7 @@
             
             // Prev month days
             for (let i = firstDayIndex - 1; i >= 0; i--) {
-                html += `<div class="col"><div class="calendar-day other-month"><div class="day-number">${daysInPrevMonth - i}</div></div></div>`;
+                html += `<div class="col-1"><div class="calendar-day other-month"><div class="day-number">${daysInPrevMonth - i}</div></div></div>`;
             }
             
             // Current month days
@@ -384,14 +388,14 @@
                 const onclick = hasEvent ? `onclick="showModal(${currentYear}, ${currentMonth}, ${day})"` : '';
                 const indicator = hasEvent ? '<div class="event-indicator"><i class="bi bi-star-fill"></i></div>' : '';
                 
-                html += `<div class="col"><div class="calendar-day ${eventClass}" ${onclick}><div class="day-number">${day}</div>${indicator}</div></div>`;
+                html += `<div class="col-1"><div class="calendar-day ${eventClass}" ${onclick}><div class="day-number">${day}</div>${indicator}</div></div>`;
             }
             
             // Next month days
             const totalCells = Math.ceil((firstDayIndex + daysInMonth) / 7) * 7;
             const remainingCells = totalCells - (firstDayIndex + daysInMonth);
             for (let day = 1; day <= remainingCells; day++) {
-                html += `<div class="col"><div class="calendar-day other-month"><div class="day-number">${day}</div></div></div>`;
+                html += `<div class="col-1"><div class="calendar-day other-month"><div class="day-number">${day}</div></div></div>`;
             }
             
             grid.innerHTML = html;
