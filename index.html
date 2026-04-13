@@ -297,8 +297,8 @@
         };
 
         function getEventsForDate(year, month, day) {
-            const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-            return events.filter(e => e.date === dateStr);
+            const dayStr = `${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            return events.filter(e => e.date.endsWith(dayStr));
         }
 
         function renderCalendar() {
