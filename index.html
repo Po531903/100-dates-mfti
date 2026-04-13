@@ -305,8 +305,8 @@
             { date: "2017-11-17", title: "Тесла Физтеха", description: "Учёные МФТИ разработали уникальную катушку Тесла.", category: "science" }
         ];
 
-        let currentYear = new Date().getFullYear();
         let currentMonth = new Date().getMonth() + 1;
+        let currentYear = 2026;
 
         const monthNames = [
             'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
@@ -330,7 +330,7 @@
             const grid = document.getElementById('calendarGrid');
             const monthYearEl = document.getElementById('monthYear');
             
-            monthYearEl.textContent = `${monthNames[currentMonth - 1]} ${currentYear}`;
+            monthYearEl.textContent = monthNames[currentMonth - 1];
             
             const firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
             const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
@@ -383,7 +383,6 @@
             currentMonth--;
             if (currentMonth < 1) {
                 currentMonth = 12;
-                currentYear--;
             }
             renderCalendar();
         });
@@ -393,7 +392,6 @@
             currentMonth++;
             if (currentMonth > 12) {
                 currentMonth = 1;
-                currentYear++;
             }
             renderCalendar();
         });
