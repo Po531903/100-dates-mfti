@@ -82,6 +82,8 @@
             color: white;
             cursor: pointer;
             font-weight: bold;
+            border: 3px solid var(--mipt-dark);
+            box-shadow: 0 0 10px rgba(26, 77, 143, 0.5);
         }
         .calendar-day.has-event:hover {
             transform: scale(1.02);
@@ -305,11 +307,18 @@
             
             monthYearEl.textContent = monthNames[currentMonth - 1]; // + ' ' + currentYear
             
+            const firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
+            let firstDayIndex = firstDay === 0 ? 6 : firstDay - 1;
             const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
             
             let html = '';
             
-            // Current month days only (no prev/next month days)
+            // Empty cells for days before the first day of month
+            for (let i = 0; i < firstDayIndex; i++) {
+                html += `<div class="col-1"></div>`;
+            }
+            
+            // Current month days
             for (let day = 1; day <= daysInMonth; day++) {
                 const dayEvents = getEventsForDate(currentYear, currentMonth, day);
                 const hasEvent = dayEvents.length > 0;
