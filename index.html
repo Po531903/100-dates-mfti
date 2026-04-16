@@ -53,14 +53,14 @@
         }
         .card {
             border: none;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            border-radius: 16px;
+            box-shadow: 0 6px 30px rgba(0,0,0,0.15);
+            border-radius: 24px;
         }
         .calendar-header {
             background: var(--mipt-blue);
             color: white;
-            border-radius: 16px 16px 0 0;
-            padding: 20px;
+            border-radius: 24px 24px 0 0;
+            padding: 30px;
         }
         .calendar-grid {
             display: grid;
@@ -80,10 +80,10 @@
         }
 .calendar-day {
             text-align: center;
-            padding: 4px;
-            border: 1px solid #e8e8e8;
-            border-radius: 8px;
-            min-height: 50px;
+            padding: 6px;
+            border: 1.5px solid #e8e8e8;
+            border-radius: 12px;
+            min-height: 75px;
             background: white;
             transition: all 0.2s;
             cursor: default;
@@ -101,12 +101,12 @@
             color: white;
             cursor: pointer;
             font-weight: bold;
-            border: 3px solid var(--mipt-dark);
-            box-shadow: 0 0 10px rgba(26, 77, 143, 0.5);
+            border: 4.5px solid var(--mipt-dark);
+            box-shadow: 0 0 15px rgba(26, 77, 143, 0.5);
         }
         .calendar-day.has-event:hover {
             transform: scale(1.02);
-            box-shadow: 0 4px 15px rgba(26, 77, 143, 0.4);
+            box-shadow: 0 6px 22px rgba(26, 77, 143, 0.4);
             z-index: 10;
             position: relative;
         }
@@ -115,7 +115,7 @@
             color: #bbb;
         }
         .day-number {
-            font-size: 0.85rem;
+            font-size: 1.3rem;
             font-weight: 600;
         }
         .event-indicator {
