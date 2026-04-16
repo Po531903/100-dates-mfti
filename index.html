@@ -66,12 +66,17 @@
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 2px;
+            width: 75%;
+            margin: 0 auto;
         }
         .calendar-header-row {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 2px;
             margin-bottom: 10px;
+            width: 75%;
+            margin-left: auto;
+            margin-right: auto;
         }
 .calendar-day {
             text-align: center;
@@ -349,9 +354,8 @@
                 const hasEvent = dayEvents.length > 0;
                 const eventClass = hasEvent ? 'has-event' : '';
                 const onclick = hasEvent ? `onclick="showModal(${currentYear}, ${currentMonth}, ${day})"` : '';
-                const indicator = hasEvent ? '<div class="event-indicator"><i class="bi bi-star-fill"></i></div>' : '';
                 
-                html += `<div class="calendar-day ${eventClass}" ${onclick}><div class="day-number">${day}</div>${indicator}</div>`;
+                html += `<div class="calendar-day ${eventClass}" ${onclick}><div class="day-number">${day}</div></div>`;
             }
             
             grid.innerHTML = html;
