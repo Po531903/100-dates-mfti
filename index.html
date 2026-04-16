@@ -62,10 +62,22 @@
             border-radius: 16px 16px 0 0;
             padding: 20px;
         }
-        .calendar-day {
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+        .calendar-header-row {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-bottom: 10px;
+        }
+.calendar-day {
             text-align: center;
             padding: 8px;
             border: 1px solid #e8e8e8;
+            border-radius: 8px;
             min-height: 120px;
             background: white;
             transition: all 0.2s;
@@ -73,6 +85,8 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
+            width: 100%;
+            box-sizing: border-box;
         }
         .calendar-day:hover {
             background: var(--mipt-light);
@@ -156,6 +170,18 @@
             padding: 20px 0;
             margin-top: 40px;
         }
+        @media (max-width: 767.98px) {
+            .calendar-day {
+                min-height: 80px;
+                padding: 4px;
+            }
+            .day-number {
+                font-size: 0.9rem;
+            }
+            .event-indicator {
+                font-size: 0.6rem;
+            }
+        }
     </style>
 </head>
 <body class="d-flex flex-column h-100">
@@ -175,7 +201,7 @@
         <div class="text-center">
             <h1 class="display-2 fw-bold mb-1" style="color: var(--mipt-blue);">100 дат МФТИ</h1>
         </div>
-        <div class="w-100" style="max-width: 900px;">
+        <div class="w-100" style="max-width: 1400px;">
             <div class="col-12">
                 <div class="card">
                     <div class="calendar-header text-center py-3">
@@ -192,16 +218,16 @@
                         </div>
                     </div>
                     <div class="card-body p-4">
-                        <div class="row g-0 text-center fw-bold mb-2">
-                            <div class="col-1">Пн</div>
-                            <div class="col-1">Вт</div>
-                            <div class="col-1">Ср</div>
-                            <div class="col-1">Чт</div>
-                            <div class="col-1">Пт</div>
-                            <div class="col-1"><span class="text-danger">Сб</span></div>
-                            <div class="col-1"><span class="text-danger">Вс</span></div>
+                        <div class="calendar-header-row text-center fw-bold">
+                            <div>Пн</div>
+                            <div>Вт</div>
+                            <div>Ср</div>
+                            <div>Чт</div>
+                            <div>Пт</div>
+                            <div><span class="text-danger">Сб</span></div>
+                            <div><span class="text-danger">Вс</span></div>
                         </div>
-                        <div id="calendarGrid" class="row g-0 text-center"></div>
+                        <div id="calendarGrid" class="calendar-grid"></div>
                         
                         <div class="text-center mt-4">
                             <p class="text-muted mb-2">
@@ -314,7 +340,7 @@
             
             // Empty cells for days before the first day of month
             for (let i = 0; i < firstDayIndex; i++) {
-                html += `<div class="col-1"></div>`;
+                html += `<div></div>`;
             }
             
             // Current month days
@@ -325,7 +351,7 @@
                 const onclick = hasEvent ? `onclick="showModal(${currentYear}, ${currentMonth}, ${day})"` : '';
                 const indicator = hasEvent ? '<div class="event-indicator"><i class="bi bi-star-fill"></i></div>' : '';
                 
-                html += `<div class="col-1"><div class="calendar-day ${eventClass}" ${onclick}><div class="day-number">${day}</div>${indicator}</div></div>`;
+                html += `<div class="calendar-day ${eventClass}" ${onclick}><div class="day-number">${day}</div>${indicator}</div>`;
             }
             
             grid.innerHTML = html;
